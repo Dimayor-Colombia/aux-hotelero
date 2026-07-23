@@ -1,1 +1,69 @@
-# aux-hotelero
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=980, user-scalable=no">
+    <title>Auxilio Hotelero Dimayor</title>
+    <link rel="icon" href="favicon.ico">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #004c99; }
+        .wrap {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        iframe {
+            border: none;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script>
+        var APP_URL = "https://script.google.com/a/macros/dimayor.com.co/s/AKfycbymSx7nCE6kLX1LVhpc90IkAaMTlNuENIzVF6GHOboSk-TL_Vt24VSTIWg50v6ycesA4w/exec";
+
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        }
+
+        if (isIOS()) {
+            // Safari iOS bloquea cookies de sesión de Google dentro de iframes (ITP)
+            // → redirigimos la pestaña completa directamente a la app
+            window.location.replace(APP_URL);
+        }
+
+        // SHARE — recibe mensaje del iframe y ejecuta Web Share API desde el contexto correcto
+        window.addEventListener("message", function(e) {
+            if (e.origin !== "https://script.google.com") return;
+            if (!e.data || e.data.type !== "share") return;
+            var url    = e.data.url;
+            var nombre = e.data.nombre;
+            if (navigator.share) {
+                navigator.share({
+                    title: nombre,
+                    text: "Te comparto este archivo de Dimayor: " + nombre,
+                    url: url
+                }).catch(function() {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(function() {
+                    alert("Enlace copiado al portapapeles ✓");
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="wrap">
+        <iframe
+            id="appFrame"
+            src="https://script.google.com/a/macros/dimayor.com.co/s/AKfycbymSx7nCE6kLX1LVhpc90IkAaMTlNuENIzVF6GHOboSk-TL_Vt24VSTIWg50v6ycesA4w/exec"
+            scrolling="yes"
+            title="Auxilio Hotelero Dimayor"
+        ></iframe>
+    </div>
+</body>
+</html>
